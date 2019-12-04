@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<form role="form" th:object=${Board} action="UpdateBoardD" method="get">
+		<input type="hidden" th:field="*{boardno}" value="[[${boardno}]]">
+		<input type="hidden" th:field="*{boardpw}" value="[[${boardpw}]]">
+		<table th:width="300" th:height="300" border="1">
+			<tr>
+				<th>제목</th>
+				<td><input type="text" th:field="*{boardtitle}"></td>
+			</tr>
+			<tr>
+				<th>내용</th>
+				<td><textarea id="content" name="content" cols="40" rows="10"
+						th:field="*{contentp}"></textarea></td>
+			</tr>
+			<tr>
+				<td id="button" colspan="2">
+					<input type="submit">
+					<input type="reset">
+					<a th:href = "@{listL}" >목록보기</a>
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

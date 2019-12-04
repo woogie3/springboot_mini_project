@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.example.demo.dao.BoardMapper">
+<select id="getBoardList" resultType="com.example.demo.bean.Board">
+		select * from BoardList order by originno desc, groupord asc
+	</select>
+	
+	<select id="getBoard" resultType="com.example.demo.bean.Board">
+		SELECT * FROM boardList WHERE boardno=#{boardno}
+	</select>
+	
+	<select id="searchTitle" resultType="com.example.demo.bean.Board">
+		select * from BoardList WHERE UPPER(boardtitle) like UPPER('%'||#{keyword}||'%') order by originno desc, groupord asc
+	</select>
+	
+	<select id="searchUserid" resultType="com.example.demo.bean.Board">
+		select * from BoardList WHERE UPPER(userid) like UPPER('%'||#{keyword}||'%') order by originno desc, groupord asc
+	</select>
+	
+	<insert id="insertQ">
+		INSERT INTO boardList(userid, boardno, boardtitle, boardpw, contentp, regdate, originno, groupord,  grouplayer, countp) 
+			VALUES( #{userid}, seq_board.NEXTVAL, #{boardtitle}, #{boardpw}, #{contentp}, sysdate, seq_board.currval, 0,  1, 0)
+	</insert>
+	
+	<insert id="insertA">
+		INSERT INTO boardList(userid, boardtitle, boardno, boardpw, contentp, regdate, originno, groupord,  grouplayer, countp) 
+			VALUES(#{userid}, #{boardtitle}, seq_board.NEXTVAL, #{boardpw}, #{contentp}, sysdate, #{originno}, #{groupord}, #{grouplayer}, 0)
+	</insert>
+	
+	<update id="updateGrouplayer">
+		UPDATE boardList SET groupord=groupord+1 WHERE originno=#{originno} AND groupord>#{groupord}
+	</update>
+	
+	
+	<delete id="deleteBoard">
+		DELETE FROM boardList WHERE boardno=#{boardno}
+	</delete>
+	
+	<update id="updateBoard">
+		UPDATE boardList SET boardtitle=#{boardtitle}, boardpw=#{boardpw}, contentp=#{contentp} WHERE boardno=#{boardno}
+	</update>
+	
+	
+	<update id="updateCount">
+		UPDATE boardList SET countp=countp+1 WHERE boardno=#{boardno}
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	<insert id="RegBoardD"
+		parameterType="com.example.demo.bean.Board">
+		INSERT INTO BoardList(UserId, BoardNo, BoardTitle,Regdate,BoardPw,ImageSrc,Countp,Contentp)
+		VALUES('kim',(select nvl(max(BoardNo),0)+1 from BoardList),#{boardtitle},sysdate,#{boardpw},#{imagesrc},0,#{contentp})
+	</insert>
+
+	<select id="lookingD" parameterType="map" resultType="Board">
+		SELECT * FROM ( SELECT p.*, ROW_NUMBER() OVER(ORDER BY originno desc, groupord asc) AS RNUM FROM boardList p) WHERE RNUM BETWEEN #{pagenum} AND #{contentnum}
+	</select>
+	
+	<select id="detail" resultType="Board">
+		select * from BoardList where boardno=#{boardno}
+	</select>
+	
+	<update id="updatecountp" parameterType="com.example.demo.bean.Board">
+		update BoardList SET countp = countp+1 where BoardNo=#{boardno}
+	</update>
+	
+
+	<update id="UpdateBoardD" parameterType="com.example.demo.bean.Board">
+		update BoardList SET Boardtitle = #{boardtitle}, contentp = #{contentp} WHERE boardno=#{boardno} and boardpw = #{boardpw}
+	</update>
+
+	<delete id="DeleteBoardD" parameterType="com.example.demo.bean.Board">
+		delete from BoardList where boardno=#{boardno} and boardpw=#{boardpw}
+	</delete>
+	
+	
+	
+	
+	
+
+</mapper>
